@@ -3,118 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nebula Social</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Uplink</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #09090b;
-            --sidebar: #18181b;
-            --panel: #27272a;
-            --border: #3f3f46;
-            --primary: #8b5cf6; /* Violet 500 */
-            --primary-hover: #7c3aed;
-            --text: #f4f4f5;
-            --text-dim: #a1a1aa;
+            --bg: #0c0c0e;
+            --sidebar: #131316;
+            --panel: #1c1c21;
+            --border: #2d2d35;
+            /* SIGNAL GREEN THEME */
+            --primary: #10b981; /* Emerald 500 */
+            --primary-hover: #059669;
+            --primary-dim: rgba(16, 185, 129, 0.1);
+            
+            --text: #e4e4e7;
+            --text-dim: #71717a;
             --danger: #ef4444;
             --success: #10b981;
-            --glass: rgba(24, 24, 27, 0.7);
+            --glass: rgba(19, 19, 22, 0.8);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
         * { box-sizing: border-box; outline: none; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
+        body { margin: 0; font-family: var(--font-ui); background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
         /* --- LAYOUT --- */
         .hidden { display: none !important; }
-        .glass-panel { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); }
         
-        /* --- SIDEBAR --- */
-        aside { width: 340px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10; }
+        /* SIDEBAR */
+        aside { width: 320px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10; }
         
-        .profile-section { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
-        .profile-section:hover { background: var(--panel); }
-        .my-avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .brand-section { padding: 25px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .signal-icon { width: 24px; height: 24px; fill: var(--primary); animation: pulse 2s infinite; }
+        .brand-text { font-family: var(--font-mono); font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+
+        .profile-strip { padding: 15px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); background: var(--panel); cursor: pointer; transition: 0.2s; }
+        .profile-strip:hover { background: #27272a; }
+        .my-avatar { width: 38px; height: 38px; border-radius: 6px; border: 1px solid var(--border); object-fit: cover; }
         
-        .nav-tabs { display: flex; padding: 10px; gap: 5px; border-bottom: 1px solid var(--border); }
-        .nav-item { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-radius: 8px; transition: 0.2s; }
-        .nav-item:hover { background: var(--panel); color: var(--text); }
-        .nav-item.active { background: var(--panel); color: var(--primary); }
+        /* TABS */
+        .nav-tabs { display: flex; padding: 10px 15px; gap: 5px; border-bottom: 1px solid var(--border); }
+        .nav-item { flex: 1; padding: 8px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text-dim); cursor: pointer; border-radius: 6px; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-item:hover { color: var(--text); background: var(--panel); }
+        .nav-item.active { background: var(--primary-dim); color: var(--primary); }
 
         .list-container { flex: 1; overflow-y: auto; padding: 10px; }
         
-        .list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; cursor: pointer; transition: 0.2s; margin-bottom: 4px; position: relative; animation: slideIn 0.3s ease; }
-        .list-item:hover { background: var(--panel); }
-        .list-item.active { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.2); }
-        .item-avatar { width: 40px; height: 40px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-weight: bold; object-fit: cover; }
+        /* LIST ITEMS */
+        .list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 4px; border: 1px solid transparent; }
+        .list-item:hover { background: var(--panel); border-color: var(--border); }
+        .list-item.active { background: var(--primary-dim); border-color: rgba(16, 185, 129, 0.3); }
         
-        .delete-btn { position: absolute; right: 10px; opacity: 0; transition: 0.2s; background: transparent; border: none; color: var(--text-dim); cursor: pointer; padding: 5px; }
+        .item-avatar { width: 36px; height: 36px; border-radius: 50%; background: #27272a; display: flex; align-items: center; justify-content: center; font-weight: bold; font-family: var(--font-mono); font-size: 14px; object-fit: cover; }
+        
+        .delete-btn { margin-left: auto; opacity: 0; transition: 0.2s; background: transparent; border: none; color: var(--text-dim); cursor: pointer; padding: 4px; }
         .list-item:hover .delete-btn { opacity: 1; }
         .delete-btn:hover { color: var(--danger); }
 
-        /* --- MAIN CHAT --- */
-        main { flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #1a1a1e, #09090b); position: relative; }
+        /* MAIN CHAT */
+        main { flex: 1; display: flex; flex-direction: column; background: var(--bg); position: relative; }
         
-        header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); background: rgba(9, 9, 11, 0.8); }
-        header h2 { margin: 0; font-size: 18px; }
+        header { padding: 20px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(12, 12, 14, 0.95); backdrop-filter: blur(5px); }
+        .header-title { font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--text); }
+        .header-status { font-size: 12px; color: var(--success); display: flex; align-items: center; gap: 6px; }
+        .header-status::before { content: ''; width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: block; box-shadow: 0 0 10px var(--success); }
+
+        #messages { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 15px; }
         
-        #messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth; }
-        
-        .msg-group { display: flex; flex-direction: column; max-width: 65%; margin-bottom: 10px; animation: fadeIn 0.2s ease; }
+        .msg-group { display: flex; flex-direction: column; max-width: 60%; animation: fadeIn 0.2s ease; }
         .msg-group.sent { align-self: flex-end; align-items: flex-end; }
         .msg-group.received { align-self: flex-start; align-items: flex-start; }
         
-        .msg-sender { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; margin-left: 5px; cursor: pointer; }
-        .msg-sender:hover { text-decoration: underline; }
+        .msg-meta { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-bottom: 5px; opacity: 0.8; }
         
-        .msg-bubble { padding: 10px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); position: relative; }
-        .sent .msg-bubble { background: var(--primary); color: white; border-bottom-right-radius: 4px; }
-        .received .msg-bubble { background: var(--panel); color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+        .msg-bubble { padding: 12px 18px; border-radius: 4px; font-size: 14px; line-height: 1.5; position: relative; word-wrap: break-word; }
+        .sent .msg-bubble { background: var(--primary-dim); color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.3); border-bottom-right-radius: 0; }
+        .received .msg-bubble { background: var(--panel); color: var(--text); border: 1px solid var(--border); border-bottom-left-radius: 0; }
         
-        .input-area { padding: 20px; background: var(--sidebar); border-top: 1px solid var(--border); display: flex; gap: 15px; align-items: center; }
-        .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: white; font-size: 15px; transition: 0.2s; }
-        .chat-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2); }
+        .input-area { padding: 20px; background: var(--sidebar); border-top: 1px solid var(--border); display: flex; gap: 10px; }
+        .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); padding: 12px 16px; border-radius: 6px; color: white; font-family: var(--font-ui); transition: 0.2s; }
+        .chat-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-dim); }
         
-        .icon-btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .icon-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+        .icon-btn { background: var(--primary); color: #000; font-weight: bold; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-family: var(--font-mono); text-transform: uppercase; font-size: 12px; transition: 0.2s; }
+        .icon-btn:hover { background: var(--primary-hover); }
 
-        /* --- MODALS --- */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
-        .modal { width: 400px; background: #111; border: 1px solid var(--border); border-radius: 20px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative; }
-        .modal-close { position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 20px; }
-        
-        /* Profile Modal Specifics */
-        .profile-header { text-align: center; margin-bottom: 20px; }
-        .profile-lg-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--panel); margin-bottom: 15px; object-fit: cover; }
-        .profile-name { font-size: 24px; font-weight: bold; margin: 0; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .profile-bio { color: var(--text-dim); margin-top: 10px; font-size: 14px; line-height: 1.5; background: var(--panel); padding: 10px; border-radius: 8px; }
-        .profile-stat { font-size: 12px; color: var(--text-dim); margin-top: 15px; display: flex; gap: 10px; justify-content: center; }
+        /* MODALS & AUTH */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal { width: 380px; background: #111; border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--text-dim); cursor: pointer; }
 
-        /* Auth Form */
-        .auth-input { width: 100%; padding: 12px; margin: 8px 0; background: var(--panel); border: 1px solid var(--border); color: white; border-radius: 8px; }
-        .btn-full { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .auth-input { width: 100%; padding: 12px; margin: 8px 0; background: #1a1a1d; border: 1px solid var(--border); color: white; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; }
+        .auth-input:focus { border-color: var(--primary); }
+        .btn-full { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 6px; color: #000; font-weight: 700; cursor: pointer; margin-top: 15px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- TOASTS --- */
-        #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 200; }
-        .toast { background: var(--panel); border: 1px solid var(--border); padding: 12px 20px; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 10px; font-size: 14px; }
-        .toast.error { border-left: 4px solid var(--danger); }
-        .toast.success { border-left: 4px solid var(--success); }
+        /* PROFILE */
+        .profile-lg-img { width: 80px; height: 80px; border-radius: 8px; border: 2px solid var(--primary); margin-bottom: 15px; object-fit: cover; }
+        .profile-bio { background: var(--panel); padding: 12px; border-radius: 6px; font-size: 13px; color: var(--text-dim); border-left: 3px solid var(--primary); font-family: var(--font-mono); margin-top: 10px; }
 
+        /* TOASTS */
+        #toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 200; }
+        .toast { background: var(--panel); border: 1px solid var(--border); padding: 12px 20px; border-radius: 4px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-family: var(--font-mono); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
     </style>
 </head>
 <body>
 
-    <!-- AUTH OVERLAY -->
+    <!-- AUTH SCREEN -->
     <div id="auth-screen" class="modal-overlay">
         <div class="modal" style="text-align: center;">
-            <h1 style="font-size: 32px; margin-bottom: 5px; background: linear-gradient(to right, #8b5cf6, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Nebula</h1>
-            <p style="color: var(--text-dim); margin-bottom: 25px;">The future of messaging.</p>
-            <input id="auth-user" class="auth-input" placeholder="Username">
-            <input id="auth-pass" class="auth-input" type="password" placeholder="Password">
-            <button class="btn-full" onclick="handleAuth('login')">Log In</button>
-            <button class="btn-full" onclick="handleAuth('register')" style="background: transparent; border: 1px solid var(--border);">Create Account</button>
+            <svg class="signal-icon" viewBox="0 0 24 24" style="margin: 0 auto 15px auto; width: 40px; height: 40px;">
+                <path d="M2 22h20V2z"></path>
+            </svg>
+            <h1 style="font-family: var(--font-mono); font-size: 28px; margin: 0 0 5px 0; color:white;">UPLINK</h1>
+            <p style="color: var(--text-dim); margin-bottom: 30px; font-size: 13px; font-family: var(--font-mono);">SECURE SIGNAL ESTABLISHED</p>
+            <input id="auth-user" class="auth-input" placeholder="CODENAME">
+            <input id="auth-pass" class="auth-input" type="password" placeholder="PASSWORD">
+            <button class="btn-full" onclick="handleAuth('login')">CONNECT</button>
+            <button class="btn-full" onclick="handleAuth('register')" style="background: transparent; border: 1px solid var(--border); color: white;">INITIALIZE NEW ID</button>
         </div>
     </div>
 
@@ -122,25 +140,27 @@
     <div id="app-ui" class="hidden" style="width: 100%; height: 100%; display: flex;">
         
         <aside>
-            <!-- My Profile Strip -->
-            <div class="profile-section" onclick="openProfile(currentUser.id)">
+            <div class="brand-section">
+                <svg class="signal-icon" viewBox="0 0 24 24"><path d="M2 22h20V2z"></path></svg>
+                <span class="brand-text">UPLINK</span>
+            </div>
+
+            <div class="profile-strip" onclick="openProfile(currentUser.id)">
                 <img id="my-avatar" class="my-avatar" src="">
                 <div style="flex:1">
-                    <div id="my-name" style="font-weight: 700; font-size: 16px;"></div>
-                    <div id="my-status" style="font-size: 12px; color: var(--success);">● Online</div>
+                    <div id="my-name" style="font-weight: 700; font-size: 14px;"></div>
+                    <div style="font-size: 10px; color: var(--success); font-family: var(--font-mono);">:: ONLINE ::</div>
                 </div>
-                <button class="icon-btn" style="background: transparent; padding: 5px;" onclick="event.stopPropagation(); openSettings()">⚙</button>
+                <button style="background:transparent; border:none; color:var(--text-dim); cursor:pointer;" onclick="event.stopPropagation(); openSettings()">⚙</button>
             </div>
 
-            <!-- Navigation -->
             <div class="nav-tabs">
-                <div class="nav-item active" onclick="switchTab('chats', this)">Chats</div>
-                <div class="nav-item" onclick="switchTab('contacts', this)">Contacts</div>
-                <div class="nav-item" onclick="switchTab('discover', this)">Explore</div>
-                <div class="nav-item" onclick="switchTab('requests', this)">Reqs <span id="badge-req"></span></div>
+                <div class="nav-item active" onclick="switchTab('chats', this)">Freqs</div>
+                <div class="nav-item" onclick="switchTab('contacts', this)">Links</div>
+                <div class="nav-item" onclick="switchTab('discover', this)">Scan</div>
+                <div class="nav-item" onclick="switchTab('requests', this)">Inbound <span id="badge-req"></span></div>
             </div>
 
-            <!-- Lists -->
             <div id="list-chats" class="list-container"></div>
             <div id="list-contacts" class="list-container hidden"></div>
             <div id="list-discover" class="list-container hidden"></div>
@@ -148,36 +168,29 @@
         </aside>
 
         <main>
-            <!-- Chat Header -->
             <header>
-                <div id="chat-title" style="font-weight: 700; color: var(--text-dim);">Select a conversation</div>
+                <div class="header-title" id="chat-title">NO SIGNAL SELECTED</div>
+                <div class="header-status" id="chat-status">AWAITING INPUT</div>
             </header>
 
-            <!-- Messages -->
-            <div id="messages">
-                <!-- Messages populate here -->
-            </div>
+            <div id="messages"></div>
 
-            <!-- Input -->
             <div id="input-area" class="input-area hidden">
-                <input id="msg-input" class="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendMessage()">
-                <button class="icon-btn" onclick="sendMessage()">➤</button>
+                <input id="msg-input" class="chat-input" placeholder="Transmit message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="icon-btn" onclick="sendMessage()">SEND</button>
             </div>
         </main>
-
     </div>
 
     <!-- PROFILE MODAL -->
     <div id="profile-modal" class="modal-overlay hidden">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('profile-modal')">×</button>
-            <div class="profile-header">
-                <img id="p-img" class="profile-lg-img">
-                <h2 id="p-name" class="profile-name"></h2>
-                <div id="p-bio" class="profile-bio"></div>
-                <div class="profile-stat">
-                    <span>Joined: <span id="p-joined"></span></span>
-                </div>
+        <div class="modal" style="text-align: center;">
+            <button class="modal-close" onclick="closeModal('profile-modal')">✕</button>
+            <img id="p-img" class="profile-lg-img">
+            <h2 id="p-name" style="margin: 0; font-family: var(--font-mono);"></h2>
+            <div id="p-bio" class="profile-bio"></div>
+            <div style="margin-top: 20px; font-size: 11px; color: var(--text-dim); font-family: var(--font-mono);">
+                FIRST CONTACT: <span id="p-joined" style="color:var(--primary)"></span>
             </div>
         </div>
     </div>
@@ -185,24 +198,25 @@
     <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="modal-overlay hidden">
         <div class="modal">
-            <button class="modal-close" onclick="closeModal('settings-modal')">×</button>
-            <h2>Edit Profile</h2>
-            <label style="font-size:12px; color:var(--text-dim)">Update Avatar (Seed)</label>
-            <input id="edit-seed" class="auth-input" placeholder="e.g. CyberPunk">
-            <label style="font-size:12px; color:var(--text-dim)">Update Bio</label>
-            <textarea id="edit-bio" class="auth-input" rows="3" placeholder="Tell us about yourself..."></textarea>
+            <button class="modal-close" onclick="closeModal('settings-modal')">✕</button>
+            <h2 style="font-family: var(--font-mono);">SETTINGS</h2>
             
-            <button class="btn-full" onclick="saveProfile()">Save Changes</button>
-            <button class="btn-full" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); margin-top: 20px;" onclick="location.reload()">Log Out</button>
+            <label style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono)">AVATAR SEED</label>
+            <input id="edit-seed" class="auth-input">
+            
+            <label style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono)">STATUS / BIO</label>
+            <textarea id="edit-bio" class="auth-input" rows="3"></textarea>
+            
+            <button class="btn-full" onclick="saveProfile()">UPDATE SIGNAL</button>
+            <button class="btn-full" style="background: transparent; border: 1px solid var(--danger); color: var(--danger); margin-top: 10px;" onclick="location.reload()">TERMINATE SESSION</button>
         </div>
     </div>
 
-    <!-- TOAST CONTAINER -->
     <div id="toast-container"></div>
 
     <script>
         // ==========================================
-        // CONFIG
+        // CONFIG - PASTE WORKER URL HERE
         // ==========================================
         const API = 'https://chat-app.jcalv.workers.dev'; 
         // ==========================================
@@ -213,11 +227,10 @@
 
         // --- UTILS ---
         const $ = (id) => document.getElementById(id);
-        
         function toast(msg, type='success') {
             const div = document.createElement('div');
             div.className = `toast ${type}`;
-            div.innerText = msg;
+            div.innerHTML = `<span>${type === 'success' ? '✔' : '✖'}</span> ${msg}`;
             $('toast-container').appendChild(div);
             setTimeout(() => div.remove(), 3000);
         }
@@ -229,7 +242,7 @@
                 const res = await fetch(API + path, opts);
                 return await res.json();
             } catch(e) {
-                toast("Network Error", "error");
+                toast("Connection Failure", "error");
                 return { error: "Network Error" };
             }
         }
@@ -238,7 +251,7 @@
         async function handleAuth(type) {
             const u = $('auth-user').value;
             const p = $('auth-pass').value;
-            if(!u || !p) return toast("Missing fields", "error");
+            if(!u || !p) return toast("Credentials missing", "error");
 
             const res = await api(`/api/${type}`, 'POST', {username: u, password: p});
             if(res.error) return toast(res.error, "error");
@@ -246,7 +259,6 @@
             currentUser = res.user;
             $('auth-screen').classList.add('hidden');
             $('app-ui').classList.remove('hidden');
-            
             updateMyProfileUI();
             refreshLists();
         }
@@ -261,54 +273,49 @@
         function switchTab(tabName, btn) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             btn.classList.add('active');
-            
             ['chats', 'contacts', 'discover', 'requests'].forEach(t => $(`list-${t}`).classList.add('hidden'));
             $(`list-${tabName}`).classList.remove('hidden');
             refreshLists();
         }
 
         async function refreshLists() {
-            // Load Chats
             const chats = await api(`/api/chats?userId=${currentUser.id}`);
             renderList('list-chats', chats, (item) => `
                 <div class="list-item ${activeChatId === item.id ? 'active' : ''}" onclick="openChat('${item.id}', '${item.name}')">
-                    <div class="item-avatar" style="background: ${stringToColor(item.name)}">${item.name.substring(0,2).toUpperCase()}</div>
-                    <div style="flex:1;">
-                        <div style="font-weight:600; font-size:14px;">${item.name}</div>
-                        <div style="font-size:12px; color:var(--text-dim)">Text conversation</div>
+                    <div class="item-avatar" style="color:var(--primary)">${item.name.substring(0,2).toUpperCase()}</div>
+                    <div style="flex:1; overflow:hidden;">
+                        <div style="font-weight:700; font-size:13px;">${item.name}</div>
+                        <div style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono)">ENCRYPTED CH 1</div>
                     </div>
                     <button class="delete-btn" onclick="deleteChat('${item.id}', event)">✕</button>
                 </div>
             `);
 
-            // Load Contacts
             const contacts = await api(`/api/friends/list?userId=${currentUser.id}`);
             renderList('list-contacts', contacts, (u) => `
                 <div class="list-item" onclick="openProfile('${u.id}')">
                     <img src="${u.avatar}" class="item-avatar">
                     <div style="flex:1; font-weight:600;">${u.username}</div>
-                    <button class="icon-btn" style="padding: 5px 10px; font-size:12px; width:auto;" onclick="event.stopPropagation(); restoreChat('${u.id}')">Message</button>
+                    <button class="icon-btn" style="padding:4px 8px; font-size:10px; width:auto;" onclick="event.stopPropagation(); restoreChat('${u.id}')">LINK</button>
                 </div>
             `);
 
-            // Load Discover
             const discover = await api(`/api/users/discover?userId=${currentUser.id}`);
             renderList('list-discover', discover, (u) => `
                 <div class="list-item" onclick="openProfile('${u.id}')">
                     <img src="${u.avatar}" class="item-avatar">
                     <div style="flex:1; font-weight:600;">${u.username}</div>
-                    <button class="icon-btn" style="padding: 5px 10px; font-size:12px; width:auto;" onclick="event.stopPropagation(); addFriend('${u.id}', this)">Add</button>
+                    <button class="icon-btn" style="padding:4px 8px; font-size:10px; width:auto;" onclick="event.stopPropagation(); addFriend('${u.id}', this)">PING</button>
                 </div>
             `);
 
-            // Load Requests
             const reqs = await api(`/api/friends/pending?userId=${currentUser.id}`);
             $('badge-req').innerText = reqs.length || "";
             renderList('list-requests', reqs, (r) => `
                 <div class="list-item">
                     <img src="${r.avatar}" class="item-avatar">
-                    <div style="flex:1;">${r.username} <span style="font-size:12px; color:var(--text-dim)">wants to chat</span></div>
-                    <button class="icon-btn" style="padding: 5px 10px; font-size:12px; width:auto; background:var(--success)" onclick="acceptFriend('${r.req_id}')">Accept</button>
+                    <div style="flex:1;">${r.username}</div>
+                    <button class="icon-btn" style="padding:4px 8px; font-size:10px; width:auto; background:var(--primary)" onclick="acceptFriend('${r.req_id}')">ACCEPT</button>
                 </div>
             `);
         }
@@ -316,35 +323,29 @@
         function renderList(id, data, templateFn) {
             const container = $(id);
             container.innerHTML = '';
-            if(!data || !data.length) {
-                container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim); font-size:13px;">Nothing here yet</div>`;
-                return;
-            }
-            data.forEach(item => { container.innerHTML += templateFn(item); });
+            if(!data || !data.length) container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim); font-family:var(--font-mono); font-size:11px;">NO SIGNAL DETECTED</div>`;
+            else data.forEach(item => { container.innerHTML += templateFn(item); });
         }
 
-        // --- CHAT LOGIC ---
+        // --- CHAT ---
         function openChat(id, name) {
             activeChatId = id;
-            $('chat-title').innerText = name;
-            $('chat-title').style.color = "var(--text)";
+            $('chat-title').innerText = name.toUpperCase();
+            $('chat-status').innerText = "SECURE CHANNEL ACTIVE";
             $('input-area').classList.remove('hidden');
             
-            // Highlight active chat
             document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
-            refreshLists(); // Re-render to show active class
-
+            refreshLists();
+            
             if(pollInterval) clearInterval(pollInterval);
             fetchMessages();
-            pollInterval = setInterval(fetchMessages, 3000);
+            pollInterval = setInterval(fetchMessages, 2500);
         }
 
         async function fetchMessages() {
             if(!activeChatId) return;
             const msgs = await api(`/api/chats/${activeChatId}/messages`);
             const container = $('messages');
-            
-            // Smart scroll: Check if at bottom
             const isAtBottom = (container.scrollHeight - container.scrollTop) <= (container.clientHeight + 150);
             
             container.innerHTML = '';
@@ -353,12 +354,11 @@
                 const time = new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
                 container.innerHTML += `
                     <div class="msg-group ${isMe ? 'sent' : 'received'}">
-                        <div class="msg-sender" onclick="openProfile('${m.user_id}')">${isMe ? 'You' : m.username} • ${time}</div>
+                        <div class="msg-meta">${isMe ? 'YOU' : m.username.toUpperCase()} // ${time}</div>
                         <div class="msg-bubble">${safe(m.content)}</div>
                     </div>
                 `;
             });
-
             if(isAtBottom) container.scrollTop = container.scrollHeight;
         }
 
@@ -366,62 +366,52 @@
             const txt = $('msg-input').value.trim();
             if(!txt) return;
             $('msg-input').value = '';
-            await api('/api/message', 'POST', {
-                chatId: activeChatId, userId: currentUser.id, username: currentUser.username, content: txt
-            });
+            await api('/api/message', 'POST', {chatId: activeChatId, userId: currentUser.id, username: currentUser.username, content: txt});
             fetchMessages();
         }
 
         async function deleteChat(chatId, e) {
             e.stopPropagation();
-            if(!confirm("Hide this chat?")) return;
+            if(!confirm("Terminate frequency?")) return;
             await api('/api/chats/delete', 'POST', {chatId, userId: currentUser.id});
             if(activeChatId === chatId) {
                 activeChatId = null;
                 $('messages').innerHTML = '';
-                $('chat-title').innerText = "Select a conversation";
+                $('chat-title').innerText = "NO SIGNAL SELECTED";
                 $('input-area').classList.add('hidden');
             }
             refreshLists();
-            toast("Chat hidden");
+            toast("Frequency Closed");
         }
 
         async function restoreChat(friendId) {
             const res = await api('/api/chats/restore', 'POST', {myId: currentUser.id, friendId});
             if(res.success) {
-                // Find chat name from DOM or wait
-                toast("Opening chat...");
-                setTimeout(() => {
-                    const btn = document.querySelector('.nav-item'); // First tab is Chats
-                    switchTab('chats', btn);
-                    openChat(res.chatId, "Loading...");
-                }, 500);
+                const btn = document.querySelector('.nav-item'); // Switch to Freqs
+                switchTab('chats', btn);
+                setTimeout(() => openChat(res.chatId, "ESTABLISHING LINK..."), 500);
             }
         }
 
         // --- ACTIONS ---
         async function addFriend(id, btn) {
             const res = await api('/api/friends/request', 'POST', {myId: currentUser.id, targetId: id});
-            if(res.success) { btn.innerText = "Sent"; btn.disabled = true; toast("Request sent"); }
+            if(res.success) { btn.innerText = "PINGED"; btn.disabled = true; toast("Signal Sent"); }
             else toast(res.error, "error");
         }
 
         async function acceptFriend(reqId) {
             await api('/api/friends/accept', 'POST', {reqId, myId: currentUser.id});
-            toast("Friend added!");
+            toast("Link Established");
             refreshLists();
         }
 
-        // --- PROFILES & SETTINGS ---
         async function openProfile(userId) {
-            // Fetch fresh profile data
             const user = await api(`/api/users/get?id=${userId}`);
-            
-            $('p-img').src = user.avatar || currentUser.avatar; // Fallback
-            $('p-name').innerText = user.username;
-            $('p-bio').innerText = user.bio || "No bio yet.";
+            $('p-img').src = user.avatar || currentUser.avatar;
+            $('p-name').innerText = user.username.toUpperCase();
+            $('p-bio').innerText = user.bio || "NO DATA";
             $('p-joined').innerText = new Date(user.created_at).toLocaleDateString();
-            
             $('profile-modal').classList.remove('hidden');
         }
 
@@ -431,7 +421,6 @@
         async function saveProfile() {
             const seed = $('edit-seed').value;
             const bio = $('edit-bio').value;
-            
             if(seed) {
                 const res = await api('/api/users/update', 'POST', {userId: currentUser.id, avatarSeed: seed});
                 if(res.success) currentUser.avatar = res.avatar;
@@ -440,19 +429,12 @@
                 await api('/api/users/update', 'POST', {userId: currentUser.id, bio: bio});
                 currentUser.bio = bio;
             }
-            
-            toast("Profile updated!");
+            toast("Signal Updated");
             updateMyProfileUI();
             closeModal('settings-modal');
         }
 
-        // --- HELPERS ---
         function safe(str) { return str.replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-        function stringToColor(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            return `hsl(${hash % 360}, 60%, 40%)`;
-        }
     </script>
 </body>
 </html>
