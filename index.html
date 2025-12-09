@@ -327,21 +327,66 @@
             else data.forEach(item => { container.innerHTML += templateFn(item); });
         }
 
-        // --- CHAT ---
+       // --- CHAT LOGIC ---
         function openChat(id, name) {
+            // 1. If we are already in this chat, do nothing (prevents reload loop)
+            if (activeChatId === id) return;
+
             activeChatId = id;
             $('chat-title').innerText = name.toUpperCase();
             $('chat-status').innerText = "SECURE CHANNEL ACTIVE";
             $('input-area').classList.remove('hidden');
             
+            // 2. Clear messages ONLY when switching chats
+            $('messages').innerHTML = ''; 
+
+            // 3. UI Updates
             document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
             refreshLists();
             
+            // 4. Start Polling
             if(pollInterval) clearInterval(pollInterval);
-            fetchMessages();
-            pollInterval = setInterval(fetchMessages, 2500);
+            fetchMessages(); // Run immediately
+            pollInterval = setInterval(fetchMessages, 2000); // Run every 2s
         }
 
+        async function fetchMessages() {
+            if(!activeChatId) return;
+            
+            // 1. Fetch data
+            const msgs = await api(`/api/chats/${activeChatId}/messages`);
+            const container = $('messages');
+            
+            // 2. Check scroll position BEFORE adding messages
+            // (If user is scrolled up reading history, don't yank them down)
+            const isAtBottom = (container.scrollHeight - container.scrollTop) <= (container.clientHeight + 100);
+            
+            msgs.forEach(m => {
+                // 3. THE FIX: Check if message already exists in DOM
+                // We use the unique Database ID (m.id) to track it
+                if (document.getElementById(`msg-${m.id}`)) return; 
+
+                // 4. Create Element (Append Only)
+                const isMe = m.user_id === currentUser.id;
+                const time = new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                
+                // Create HTML string
+                const msgHTML = `
+                    <div class="msg-group ${isMe ? 'sent' : 'received'}" id="msg-${m.id}">
+                        <div class="msg-meta">${isMe ? 'YOU' : m.username.toUpperCase()} // ${time}</div>
+                        <div class="msg-bubble">${safe(m.content)}</div>
+                    </div>
+                `;
+                
+                // Append to container
+                container.insertAdjacentHTML('beforeend', msgHTML);
+            });
+
+            // 5. Scroll to bottom ONLY if we were already at bottom or it's a new load
+            if(isAtBottom) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }
         async function fetchMessages() {
             if(!activeChatId) return;
             const msgs = await api(`/api/chats/${activeChatId}/messages`);
@@ -438,3 +483,4 @@
     </script>
 </body>
 </html>
+
